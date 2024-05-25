@@ -1,12 +1,12 @@
-const { Schema, model, Types } = require('mongoose');
+const { Schema, Types } = require('mongoose');
 
-// Schema to create a course model
-const courseSchema = new Schema(
+const reactionSchema = new Schema(
   {
     reactionId: {
       type: Types.ObjectId,
       default: () => new Types.ObjectId(),
     },
+
     reactionBody: {
       type: String,
       required: true,
@@ -15,23 +15,22 @@ const courseSchema = new Schema(
     createdAt: {
       type: Date,
       default: Date.now,
+      get: date => {
+        return (dayjs(date).format('DD/MM/YYYY'))
+      }
+    },
+    user:
+    {
+      type: String,
+      required: true,
     },
 
-    user: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'user',
-      },
-    ],
   },
   {
     toJSON: {
-      virtuals: true,
+      getters: true,
     },
-    id: false,
   }
 );
 
-const Course = model('course', courseSchema);
-
-module.exports = Course;
+module.exports = reactionSchema;

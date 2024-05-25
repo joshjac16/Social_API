@@ -1,11 +1,10 @@
-const { Schema, Types } = require('mongoose');
-
+const { Schema, model, Types } = require('mongoose');
+const reactionSchema = require('./Reaction')
+const dayjs = require('dayjs')
+// Schema to create a course model
 const thoughtSchema = new Schema(
   {
-    assignmentId: {
-      type: Schema.Types.ObjectId,
-      default: () => new Types.ObjectId(),
-    },
+
     thoughtText: {
       type: String,
       required: true,
@@ -15,20 +14,32 @@ const thoughtSchema = new Schema(
     createdAt: {
       type: Date,
       default: Date.now,
+      get: date => {
+        return (dayjs(date).format('DD/MM/YYYY'))
+      }
     },
-    user: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'user',
-      },
-    ],
+
+    user:
+    {
+      type: String,
+      required: true,
+    },
+    reaction: [
+      reactionSchema
+    ]
   },
   {
     toJSON: {
-      getters: true,
+      virtuals: true,
     },
     id: false,
   }
 );
 
-module.exports = thoughtSchema;
+thoughtSchema.virtual("reactionCount").get(function () {
+  return this.reaction.length
+})
+
+const Thought = model('thought', thoughtSchema);
+
+module.exports = Thought;
