@@ -10,8 +10,8 @@ module.exports = {
       const thoughts = await Thought.find();
 
       const thoughtObj = {
-        thoughts,
-        headCount: await headCount(),
+        thoughts
+
       };
 
       res.json(thoughtObj);
@@ -32,7 +32,7 @@ module.exports = {
 
       res.json({
         thought,
-        grade: await grade(req.params.thoughtId),
+
       });
     } catch (err) {
       console.log(err);
@@ -48,7 +48,7 @@ module.exports = {
       res.status(500).json(err);
     }
   },
-  // Delete a thought and remove them from the course
+  // Delete a thought and remove them from the user
   async deleteThought(req, res) {
     try {
       const thought = await Thought.findOneAndRemove({ _id: req.params.thoughtId });

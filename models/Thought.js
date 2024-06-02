@@ -1,17 +1,17 @@
 const { Schema, model, Types } = require('mongoose');
 const reactionSchema = require('./Reaction')
 const dayjs = require('dayjs')
-// Schema to create a course model
+// Schema to create a Thought model
 const thoughtSchema = new Schema(
   {
 
-    thoughtText: {
+    thoughtText: {                                       // Defining a field for thoughtText of type String 
       type: String,
       required: true,
       maxlength: 280,
       minlength: 1,
     },
-    createdAt: {
+    createdAt: {                                        // Defining a field for createdAt of type Date
       type: Date,
       default: Date.now,
       get: date => {
@@ -19,27 +19,27 @@ const thoughtSchema = new Schema(
       }
     },
 
-    user:
+    user:                                                // Defining a field for user of type String
     {
       type: String,
       required: true,
     },
-    reaction: [
+    reaction: [                                          // Defining a field for reactions as an array of reactionSchema objects
       reactionSchema
     ]
   },
   {
-    toJSON: {
+    toJSON: {                                            // Defining options for schema
       virtuals: true,
     },
-    id: false,
+    id: false,                                           // Disabling the generation of the _id field
   }
 );
 
-thoughtSchema.virtual("reactionCount").get(function () {
+thoughtSchema.virtual("reactionCount").get(function () {  // Defining a virtual field "reactionCount" to calculate the number of reactions
   return this.reaction.length
 })
 
-const Thought = model('thought', thoughtSchema);
+const Thought = model('thought', thoughtSchema);         // Creating a model named "Thought" based on the thoughtSchema
 
-module.exports = Thought;
+module.exports = Thought;                                // Exporting the Thought model to be used elsewhere in the application

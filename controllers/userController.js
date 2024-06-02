@@ -8,6 +8,7 @@ module.exports = {
       res.json(users);
     } catch (err) {
       res.status(500).json(err);
+      console.log(err)
     }
   },
   // Get a user
@@ -61,6 +62,49 @@ module.exports = {
 
       if (!user) {
         res.status(404).json({ message: 'No user with this id!' });
+      }
+
+      res.json(user);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
+  // Add friend to user 
+  async addFriend(req, res) {
+    console.log('You are adding an reaction');
+    console.log(req.body);
+
+    try {
+      const user = await User.findOneAndUpdate(
+        { _id: req.params.userId },
+        { $addToSet: { friend: req.body } },
+        { runValidators: true, new: true }
+      );
+
+      if (!user) {
+        return res
+          .status(404)
+          .json({ message: 'No thought found with that ID :(' });
+      }
+
+      res.json(user);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
+  // Remove friend from a user
+  async removeFriend(req, res) {
+    try {
+      const user = await User.findOneAndUpdate(
+        { _id: req.params.userId },
+        { $pull: { reaction: { friendId: req.params.friendId } } },
+        { runValidators: true, new: true }
+      );
+
+      if (!user) {
+        return res
+          .status(404)
+          .json({ message: 'No thought found with that ID :(' });
       }
 
       res.json(user);
